@@ -25,10 +25,12 @@ function hashFnv32a(str, asString, seed) {
   }
   if(asString){
     // Convert to 8 digit hex string
-    return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
+    return ("0000000" + (hval >>> 0).toString(16)).slice(-8);
   }
   return hval >>> 0;
 }
+
+// app.use(express.static('public'));
 
 app.get('/', (req, res) => {
   res.send('<h1>It works</h1>');
@@ -39,7 +41,12 @@ io.on('connection', (socket) => {
   socket.on('client hello', (deviceID) => {
     console.log('client subscribed to #update:' + deviceID)
     socket.intervalHandler = setInterval(((socket, length) => (_ => {
-      const arr = Array.from({ length: length }).map((x, i) => noise2D(hashFnv32a(deviceID) % 1024 + i / length * 2, new Date().valueOf() % 1000000 / 1000) ** 4);
+      const arr = Array.from({ length: length }).map((x, i) => {
+        let noise = noise2D(hashFnv32a(deviceID) % 1024 + i / length * 2, new Date().valueOf() % 1000000 / 10000);
+        noise = noise ** 2;
+        noise = noise < 0.5 ? 8 * noise * noise * noise * noise : 1 - Math.pow(-2 * noise + 2, 4) / 2;
+        return noise;
+      });
       socket.emit('update:' + deviceID, JSON.stringify(arr));
     }))(socket, hashFnv32a(deviceID) % 16 + 16), 150);
   });
