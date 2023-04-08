@@ -69,7 +69,10 @@ client.on('connect', function () {
       noise = noise < 0.5 ? 8 * noise * noise * noise * noise : 1 - Math.pow(-2 * noise + 2, 4) / 2;
       return noise;
     });
-    client.publish('update:' + deviceID, JSON.stringify(arr));
+    client.publish('update:' + deviceID, JSON.stringify({
+      timestamp: Date.now(),
+      payload: arr
+    }));
     console.log('update');
   }))(client, hashFnv32a(deviceID) % 16 + 16), msgFreq);
 })
