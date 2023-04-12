@@ -62,6 +62,7 @@ var intervalHandler = -1;
 
 client.on('connect', function () {
   console.log('Connection established');
+  clearInterval(intervalHandler);
   intervalHandler = setInterval(((client, length) => (_ => {
     const arr = Array.from({ length: length }).map((x, i) => {
       let noise = noise2D(hashFnv32a(deviceID) % 1024 + i / length * 2, new Date().valueOf() % 1000000 / 10000);
