@@ -29,6 +29,8 @@ const options = {
     },
 };
 
+categories = ['Alarmsignal','AstmaHusten','Blending','Bohren','CovidHusten','Doseöffnen','Electronic_Zahnbürste','Etwas-am-Boden-ziehen','Fenster','Feuerzeug','Flöte','Fußstapfen-gehen','GesunderHusten','Gitarre','Glas','Haartrockner','Hahn','Handsäge','Huhn','Hund','Katze','Klarinette','Klassenname','klatschen','Klingelton','Küssen','Lachen','Mausklick','Metall-auf-Metall','Möbelrücken','Niesen','Pfeifen','Presslufthammer','Ruhe','Schlag','Schlagzeug','Schnarchen','Sirene','Sitar','SprechendeFrau','SprechenderMann','Staubsauger','Tastatur-tippen','Toilettenspülung','Trampler','Trinken','Türklingel','Türklopfen','Uhr-ticken','Vandalismus','Waschmaschine','Wasser','Weinen','Wimmern','Wind','Zahnbürste','Zerbrechen','ZwitscherndeVögel'];
+
 const noise2D = createNoise2D();
 
 function hashFnv32a(str, asString, seed) {
@@ -84,25 +86,33 @@ client.on('end', () => {
 
 var intervalHandler = -1;
 
+var topic = `tele/indoor_sound_classification/${deviceID}/state`;
+
 client.on('connect', function () {
     console.log('Connection established');
     connected = true;
     clearInterval(intervalHandler);
-    intervalHandler = setInterval(((client, length) => (_ => {
+    intervalHandler = setInterval(((client) => (_ => {
         if(connected) {
-            const arr = Array.from({ length: length }).map((x, i) => {
-                let noise = noise2D(hashFnv32a(deviceID) % 1024 + i / length * 2, new Date().valueOf() % 1000000 / 10000);
+            const timestamp = Date.now()
+            const res = categories.reduce((acc, curr) => {
+                let noise = noise2D((hashFnv32a(curr) + timestamp) % 1024 / categories.length * 2, new Date().valueOf() % 1000000 / 10000);
                 noise = noise ** 2;
                 noise = noise < 0.5 ? 8 * noise * noise * noise * noise : 1 - Math.pow(-2 * noise + 2, 4) / 2;
-                return noise;
+                acc[curr] = noise;
+                return acc;
+            }, {});
+            console.log(res);
+            var msg = JSON.stringify({
+                timestamp: timestamp,
+                payload: {
+                    prediction: res
+                }
             });
-            client.publish('update:' + deviceID, JSON.stringify({
-                timestamp: Date.now(),
-                payload: arr
-            }));
-            console.log('update');
+            client.publish(topic, msg);
+            console.log(`mqtt_pub:topic=${topic},msg='${msg}'`);
         }
-    }))(client, hashFnv32a(deviceID) % 16 + 16), msgFreq);
+    }))(client), msgFreq);
 });
 
 client.on('message', function (topic, message) {
