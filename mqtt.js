@@ -8,7 +8,7 @@ const clientId = 'fake_datasource_mqttjs_' + Math.random().toString(16).substr(2
 const host = 'ws://mqtt-admin-mys-karlsruhe-0.makelove.expert/mqtt';
 const username = 'test';
 const password = 'TuC';
-const msgFreq = 1500; // interval ms
+const msgFreq = 60000 / 60; // interval ms
 const deviceID = 'fake_datasource';
 
 const options = {
@@ -96,18 +96,16 @@ client.on('connect', function () {
         if(connected) {
             const timestamp = Date.now()
             const res = categories.reduce((acc, curr) => {
-                let noise = noise2D((hashFnv32a(curr) + timestamp) % 1024 / categories.length * 2, new Date().valueOf() % 1000000 / 10000);
-                noise = noise ** 2;
-                noise = noise < 0.5 ? 8 * noise * noise * noise * noise : 1 - Math.pow(-2 * noise + 2, 4) / 2;
+                let noise = noise2D((hashFnv32a(curr)), new Date().valueOf() / 30 / msgFreq);
+                noise = (noise + 1) / 2;
+                noise = Math.sin(noise ** 3 * Math.PI / 2) ** 3;
                 acc[curr] = noise;
                 return acc;
             }, {});
             console.log(res);
             var msg = JSON.stringify({
                 timestamp: timestamp,
-                payload: {
-                    prediction: res
-                }
+                prediction: res
             });
             client.publish(topic, msg);
             console.log(`mqtt_pub:topic=${topic},msg='${msg}'`);
