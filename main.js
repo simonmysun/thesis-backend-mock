@@ -79,7 +79,10 @@ const db = {
 };
 
 app.get('/api/devices', (req, res) => {
-  res.send(JSON.stringify(Object.keys(db.devices)))
+  res.send(JSON.stringify(Object.keys(db.devices).map(name => ({
+    name: name,
+    comment: db.devices[name].comment,
+  }))));
 });
 
 app.get('/api/devices/:deviceId', (req, res) => {
@@ -164,7 +167,10 @@ fetch('/api/devices/fake_datasource_1', {
 
 
 app.get('/api/alerts', (req, res) => {
-  res.send(JSON.stringify(Object.keys(db.devalertsices)))
+  res.send(JSON.stringify(Object.keys(db.alerts).map(name => ({
+    name: name,
+    comment: db.alerts[name].comment,
+  }))));
 });
 
 app.get('/api/alerts/:alertId', (req, res) => {
