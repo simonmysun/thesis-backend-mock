@@ -3,7 +3,7 @@ const { createNoise2D } = require('simplex-noise');
 
 // const client  = mqtt.connect('mqtt://mqtt.makelove.expert')
 
-const clientId = 'fake_datasource_mqttjs_' + Math.random().toString(16).substr(2, 8);
+const clientId = 'fake_datasource_mqttjs_' + Math.random().toString(16).slice(2, 10);
 
 const host = 'ws://mqtt-admin-mys-karlsruhe-0.makelove.expert/mqtt';
 const username = 'test';
