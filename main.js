@@ -51,23 +51,29 @@ const db = {
   devices: {
     fake_datasource_1: {
       name: 'fake_datasource_1',
+      comment: 'This is a commment',
     },
     fake_datasource_2: {
       name: 'fake_datasource_2',
+      comment: 'This is a commment',
     },
     fake_datasource_3: {
       name: 'fake_datasource_3',
+      comment: 'This is a commment',
     },
   },
   alerts: {
     alert_demo_1: {
       name: 'alert_demo_1',
+      comment: 'This is a commment',
     },
     alert_demo_2: {
       name: 'alert_demo_2',
+      comment: 'This is a commment',
     },
     alert_demo_3: {
       name: 'alert_demo_3',
+      comment: 'This is a commment',
     },
   },
 };
@@ -89,6 +95,7 @@ app.post('/api/devices/:deviceId', (req, res) => {
   if(req.params.deviceId in db.devices) {
     db.devices[req.params.deviceId] = {
       name: req.body.name,
+      comment: req.body.comment,
     }
     res.send('200');
   } else {
@@ -104,7 +111,7 @@ fetch('/api/devices/fake_datasource_1', {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ name: 'changed' })
+    body: JSON.stringify({ name: 'changed', comment: 'succ' })
 });
  */
 
@@ -114,7 +121,8 @@ app.put('/api/devices/:deviceId', (req, res) => {
     res.send('409');
   } else {
     db.devices[req.params.deviceId] = {
-      name: req.body.name
+      name: req.body.name,
+      comment: req.body.comment,
     };
     res.send('200');
   }
@@ -127,7 +135,7 @@ fetch('/api/devices/test_add', {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
   },
-  body: JSON.stringify({ name: 'test_add' })
+  body: JSON.stringify({ name: 'test_add', comment: 'succ' })
 });
 */
 
@@ -172,6 +180,7 @@ app.post('/api/alerts/:alertId', (req, res) => {
   if(req.params.alertId in db.alerts) {
     db.alerts[req.params.alertId] = {
       name: req.body.name,
+      comment: req.body.comment,
     }
     res.send('200');
   } else {
@@ -186,7 +195,8 @@ app.put('/api/alerts/:alertId', (req, res) => {
     res.send('409');
   } else {
     db.alerts[req.params.alertId] = {
-      name: req.body.name
+      name: req.body.name,
+      comment: req.body.comment,
     };
     res.send('200');
   }
