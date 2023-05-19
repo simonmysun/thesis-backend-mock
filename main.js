@@ -72,11 +72,6 @@ const db = {
   },
 };
 
-app.get('/', (req, res) => {
-  res.send('It works. ')
-});
-
-
 app.get('/api/devices', (req, res) => {
   res.send(JSON.stringify(Object.keys(db.devices)))
 });
@@ -206,6 +201,14 @@ app.delete('/api/alerts/:alertId', (req, res) => {
     res.send('404');
   }
 });
+
+// app.get('/', (req, res) => {
+//   res.send('It works. ')
+// });
+
+const proxy = require('express-http-proxy');
+app.use('/', proxy('localhost:3000'));
+
 
 app.listen(port, () => {
   console.log(`listening on port ${port}`)
