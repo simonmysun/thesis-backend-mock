@@ -1,24 +1,54 @@
 # API Docs
 ## Live stream
-### Websocket `/socket.io`
-Subsribes to updates from device
+### Websocket `/mqtt`
+```js
+const topic = `tele/indoor_sound_classification/${deviceID}/state`;
+```
 
-client: client hello
+payload format:
 
+```json
+{
+    "timestamp": ${timestamp},
+    "prediction": {
+      "${tag}": ${value},
+      ...
+    }
+}
+```
 
 ## Device
-### GET `/api/device/`
-### GET `/api/device/:deviceId`
-### POST `/api/device/:deviceId`
-### POST `/api/device/add`
-### POST `/api/device/delete`
+### GET `/api/devices/`
+list of available devices
+
+### GET `/api/devices/:deviceId`
+get information of `deviceId`
+
+### POST `/api/devices/:deviceId`
+modify information of `deviceId`
+
+### POST `/api/devices/:deviceId`
+add device `deviceId`
+
+### POST `/api/devices/:deviceId`
+remove device `deviceId`
 
 ## Query
-### `/api/query/:queryStr`
+### GET `/api/query/:queryStr`
+query historical data with `queryStr`
 
 ## Alert
-### GET `/api/alert/`
-### GET `/api/alert/:alertId`
-### POST `/api/alert/:alertId`
-### POST `/api/alert/add`
-### POST `/api/alert/delete`
+### GET `/api/alerts/`
+get list of alerts
+
+### GET `/api/alerts/:alertId`
+get information of `alertId`
+
+### POST `/api/alerts/:alertId`
+modify information of `alertId`
+
+### PUT `/api/alerts/:alertId`
+add alert `alertId`
+
+### DELETE `/api/alerts/:alertId`
+remove alert `alertId`
