@@ -105,6 +105,7 @@ client.on('connect', function () {
             console.log(res);
             var msg = JSON.stringify({
                 timestamp: timestamp,
+                sampleRate: msgFreq,
                 prediction: res
             });
             client.publish(topic, msg);
