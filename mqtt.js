@@ -8,8 +8,8 @@ const clientId = 'fake_datasource_mqttjs_' + Math.random().toString(16).slice(2,
 const host = 'ws://mqtt-admin-mys-karlsruhe-0.makelove.expert/mqtt';
 const username = 'test';
 const password = 'TuC';
-const msgFreq = 60000 / 60; // interval ms
-const deviceID = 'fake_datasource_1';
+const msgFreq = 6000 / 60; // interval ms
+const deviceID = process.argv[2];
 
 const options = {
     keepalive: 60,
@@ -96,20 +96,21 @@ client.on('connect', function () {
         if(connected) {
             const timestamp = Date.now()
             const res = categories.reduce((acc, curr) => {
-                let noise = noise2D((hashFnv32a(curr)), new Date().valueOf() / 30 / msgFreq);
+                let noise = noise2D((hashFnv32a(curr)) >>> 8, (new Date().valueOf() & 0xfffffff) / 30.0 / msgFreq);
+                console.log(noise, (hashFnv32a(curr)) >>> 8, (new Date().valueOf() & 0xfffffff) / 30.0 / msgFreq);
                 noise = (noise + 1) / 2;
-                noise = Math.sin(noise ** 3 * Math.PI / 2) ** 3;
+                noise = Math.sin(noise ** 3 * Math.PI / 2) ** 8;
                 acc[curr] = noise;
                 return acc;
             }, {});
-            console.log(res);
+            // console.log(res);
             var msg = JSON.stringify({
                 timestamp: timestamp,
                 sampleRate: msgFreq,
                 prediction: res
             });
             client.publish(topic, msg);
-            console.log(`mqtt_pub:topic=${topic},msg='${msg}'`);
+            // console.log(`mqtt_pub:topic=${topic},msg='${msg}'`);
         }
     }))(client), msgFreq);
 });
