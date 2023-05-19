@@ -66,14 +66,17 @@ const db = {
     alert_demo_1: {
       name: 'alert_demo_1',
       comment: 'This is a commment',
+      lastFired: new Date().toISOString(),
     },
     alert_demo_2: {
       name: 'alert_demo_2',
       comment: 'This is a commment',
+      lastFired: new Date().toISOString(),
     },
     alert_demo_3: {
       name: 'alert_demo_3',
       comment: 'This is a commment',
+      lastFired: new Date().toISOString(),
     },
   },
 };
@@ -170,6 +173,7 @@ app.get('/api/alerts', (req, res) => {
   res.send(JSON.stringify(Object.keys(db.alerts).map(name => ({
     name: name,
     comment: db.alerts[name].comment,
+    lastFired: db.alerts[name].lastFired,
   }))));
 });
 
@@ -200,10 +204,7 @@ app.put('/api/alerts/:alertId', (req, res) => {
     res.status(409);
     res.send('409');
   } else {
-    db.alerts[req.params.alertId] = {
-      name: req.params.alertId,
-      comment: req.body.comment,
-    };
+    db.alerts[req.params.alertId].comment = req.body.comment;
     res.send('200');
   }
 });
