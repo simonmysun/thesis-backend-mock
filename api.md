@@ -10,6 +10,7 @@ payload format:
 ```json
 {
     "timestamp": ${timestamp},
+    "sampleRate": ${sampleRate},
     "prediction": {
       "${tag}": ${value},
       ...
