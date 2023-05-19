@@ -124,7 +124,7 @@ app.put('/api/devices/:deviceId', (req, res) => {
     res.send('409');
   } else {
     db.devices[req.params.deviceId] = {
-      name: req.body.name,
+      name: req.params.deviceId,
       comment: req.body.comment,
     };
     res.send('200');
@@ -201,7 +201,7 @@ app.put('/api/alerts/:alertId', (req, res) => {
     res.send('409');
   } else {
     db.alerts[req.params.alertId] = {
-      name: req.body.name,
+      name: req.params.alertId,
       comment: req.body.comment,
     };
     res.send('200');
