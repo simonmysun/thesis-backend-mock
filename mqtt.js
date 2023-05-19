@@ -9,7 +9,7 @@ const host = 'ws://mqtt-admin-mys-karlsruhe-0.makelove.expert/mqtt';
 const username = 'test';
 const password = 'TuC';
 const msgFreq = 60000 / 60; // interval ms
-const deviceID = 'fake_datasource';
+const deviceID = 'fake_datasource_1';
 
 const options = {
     keepalive: 60,
