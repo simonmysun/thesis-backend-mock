@@ -1,0 +1,68 @@
+version: '3.8'
+services:
+  thesis-backend-prometheus:
+    image: prom/prometheus:v2.41.0@sha256:1a3e9a878e50cd339ae7cf5718fda08381dda2d4ccd28e94bbaa3190d1a566c2
+    restart: unless-stopped
+    user: 1000:1000
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules/:/etc/prometheus/rules/:ro
+      - ./prometheus/data/:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=12w'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    expose: 
+      - 9090
+    networks:
+      - thesis-backend
+  thesis-backend-alertmanager:
+    image: prom/alertmanager:v0.25.0@sha256:fd4d9a3dd1fd0125108417be21be917f19cc76262347086509a0d43f29b80e98
+    restart: unless-stopped
+    expose:
+      - 9093
+    volumes:
+      - ./alertmanager/config:/config:ro
+      - ./alertmanager/data:/data
+    command: --config.file=/config/alertmanager.yml --log.level=debug
+    networks:
+      - thesis-backend
+  thesis-backend-mock:
+    build: 
+      ./thesis-backend-mock/
+    expose:
+      - 3001
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.thesis-backend-mock.rule=Host(`thesis-frontend.makelove.expert`)
+      - traefik.http.services.thesis-backend-mock.loadbalancer.server.port=3001
+      - traefik.docker.network=traefik_reverse-proxy
+    networks:
+      - thesis-backend
+      - traefik_reverse-proxy
+  thesis-backend-grafana:
+    image: grafana/grafana:9.3.2@sha256:2a73ae33c9f0c51af6eced2ef185d5d3682b4c378c4fdd6941a14e8ea4a3e95b
+    expose:
+      - 3000
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+    # plugins: grafana-cli plugins install farski-blendstat-panel
+    # plugins: grafana-cli plugins install grafana-piechart-panel
+    networks:
+      - thesis-backend
+      - traefik_reverse-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grafana.rule=Host(`thesis-backend-grafana-mys-karlsruhe-0.makelove.expert`)
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
+      - traefik.docker.network=traefik_reverse-proxy
+networks:
+  thesis-backend:
+    driver: bridge
+  traefik_reverse-proxy:
+    external: true

@@ -1,0 +1,26 @@
+global:
+  smtp_from: 'mail@maoyin.eu'
+  smtp_smarthost: 'mail1.netim.hosting:465'
+  smtp_require_tls: false
+  smtp_auth_username: 'mail@maoyin.eu'
+  smtp_auth_password: 'q!@ZzrVjqf8AFje'
+  smtp_hello: 'maoyin.eu'
+  resolve_timeout: 5m
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'thesis-backend'
+        
+receivers:
+- name: 'thesis-backend'
+  email_configs:
+  - to: 'simonmysun@gmail.com'
+    from: 'thesis-backend-alertmanager-mys-karlsruhe-0@maoyin.eu'
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'dev', 'instance']

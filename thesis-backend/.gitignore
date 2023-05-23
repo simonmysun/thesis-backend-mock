@@ -1,0 +1,4 @@
+thesis-backend-mock/node_modules/*
+alertmanager/data/*
+grafana/data/*
+prometheus/data/*

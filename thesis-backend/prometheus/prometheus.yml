@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 12s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - thesis-backend-alertmanager:9093
+rule_files:
+  - ./rules/*.yml
+
+scrape_configs:
+  - job_name: "thesis-backend-prometheus"
+    static_configs:
+    - targets: ["thesis-backend-prometheus:9090"]
+  - job_name: "thesis-backend-grafana"
+    static_configs:
+    - targets: ["thesis-backend-grafana:3000"]
