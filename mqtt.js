@@ -8,7 +8,7 @@ const clientId = 'fake_datasource_mqttjs_' + Math.random().toString(16).slice(2,
 const host = 'ws://mqtt-admin-mys-karlsruhe-0.makelove.expert/mqtt';
 const username = 'test';
 const password = 'TuC';
-const msgFreq = 6000 / 60; // interval ms
+const msgFreq = 60000 / 60; // interval ms
 const deviceID = process.argv[2];
 
 const options = {
@@ -29,7 +29,7 @@ const options = {
     },
 };
 
-categories = ['Alarmsignal','AstmaHusten','Blending','Bohren','CovidHusten','Doseöffnen','Electronic_Zahnbürste','Etwas-am-Boden-ziehen','Fenster','Feuerzeug','Flöte','Fußstapfen-gehen','GesunderHusten','Gitarre','Glas','Haartrockner','Hahn','Handsäge','Huhn','Hund','Katze','Klarinette','Klassenname','klatschen','Klingelton','Küssen','Lachen','Mausklick','Metall-auf-Metall','Möbelrücken','Niesen','Pfeifen','Presslufthammer','Ruhe','Schlag','Schlagzeug','Schnarchen','Sirene','Sitar','SprechendeFrau','SprechenderMann','Staubsauger','Tastatur-tippen','Toilettenspülung','Trampler','Trinken','Türklingel','Türklopfen','Uhr-ticken','Vandalismus','Waschmaschine','Wasser','Weinen','Wimmern','Wind','Zahnbürste','Zerbrechen','ZwitscherndeVögel'];
+const categories = ['Alarmsignal','AstmaHusten','Blending','Bohren','CovidHusten','Doseöffnen','Electronic_Zahnbürste','Etwas-am-Boden-ziehen','Fenster','Feuerzeug','Flöte','Fußstapfen-gehen','GesunderHusten','Gitarre','Glas','Haartrockner','Hahn','Handsäge','Huhn','Hund','Katze','Klarinette','Klassenname','klatschen','Klingelton','Küssen','Lachen','Mausklick','Metall-auf-Metall','Möbelrücken','Niesen','Pfeifen','Presslufthammer','Ruhe','Schlag','Schlagzeug','Schnarchen','Sirene','Sitar','SprechendeFrau','SprechenderMann','Staubsauger','Tastatur-tippen','Toilettenspülung','Trampler','Trinken','Türklingel','Türklopfen','Uhr-ticken','Vandalismus','Waschmaschine','Wasser','Weinen','Wimmern','Wind','Zahnbürste','Zerbrechen','ZwitscherndeVögel'];
 
 const noise2D = createNoise2D();
 
