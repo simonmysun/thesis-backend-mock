@@ -43,6 +43,16 @@ services:
     networks:
       - thesis-backend
       - traefik_reverse-proxy
+  thesis-mqtt-mock-1:
+    environment:
+      deviceId: fake_datasource_1
+    build: 
+      context: ./thesis-mqtt-mock/
+  thesis-mqtt-mock-3:
+    environment:
+      deviceId: fake_datasource_3
+    build: 
+      context: ./thesis-mqtt-mock/
   thesis-backend-grafana:
     image: grafana/grafana:9.3.2@sha256:2a73ae33c9f0c51af6eced2ef185d5d3682b4c378c4fdd6941a14e8ea4a3e95b
     expose:
