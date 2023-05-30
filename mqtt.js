@@ -97,7 +97,6 @@ client.on('connect', function () {
             const timestamp = Date.now()
             const res = categories.reduce((acc, curr) => {
                 let noise = noise2D((hashFnv32a(curr)) >>> 8, (new Date().valueOf() & 0xfffffff) / 30.0 / msgFreq);
-                console.log(noise, (hashFnv32a(curr)) >>> 8, (new Date().valueOf() & 0xfffffff) / 30.0 / msgFreq);
                 noise = (noise + 1) / 2;
                 noise = Math.sin(noise ** 3 * Math.PI / 2) ** 8;
                 acc[curr] = noise;
