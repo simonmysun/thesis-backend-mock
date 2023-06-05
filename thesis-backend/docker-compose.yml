@@ -43,20 +43,20 @@ services:
     networks:
       - thesis-backend
       - traefik_reverse-proxy
-  thesis-mqtt-mock-1:
+  thesis-backend-mqtt-mock-1:
     environment:
       deviceId: fake_datasource_1
     env_file:
-      - ./thesis-mqtt-mock/.env
+      - ./.env
     build: 
-      context: ./thesis-mqtt-mock/
-  thesis-mqtt-mock-3:
+      context: ./thesis-backend-mqtt-mock/
+  thesis-backend-mqtt-mock-3:
     environment:
       deviceId: fake_datasource_3
     env_file:
-      - ./thesis-mqtt-mock/.env
+      - ./.env
     build: 
-      context: ./thesis-mqtt-mock/
+      context: ./thesis-backend-mqtt-mock/
   thesis-backend-grafana:
     image: grafana/grafana:9.3.2@sha256:2a73ae33c9f0c51af6eced2ef185d5d3682b4c378c4fdd6941a14e8ea4a3e95b
     expose:
@@ -75,6 +75,17 @@ services:
       - traefik.http.routers.thesis-backend-grafana.rule=Host(`thesis-backend-grafana-mys-karlsruhe-0.makelove.expert`)
       - traefik.http.services.thesis-backend-grafana.loadbalancer.server.port=3000
       - traefik.docker.network=traefik_reverse-proxy
+  thesis-backend-mqtt-exporter:
+    expose:
+      - 9000
+    environment:
+      topic: tele/indoor_sound_classification/+/state
+    env_file:
+      - ./.env
+    build: 
+      context: ./thesis-backend-mqtt-exporter/
+    networks:
+      - thesis-backend
 networks:
   thesis-backend:
     driver: bridge
