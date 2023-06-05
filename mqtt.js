@@ -1,15 +1,13 @@
 const mqtt = require('mqtt');
 const { createNoise2D } = require('simplex-noise');
 
-// const client  = mqtt.connect('mqtt://mqtt.makelove.expert')
-
 const clientId = 'fake_datasource_mqttjs_' + Math.random().toString(16).slice(2, 10);
 
-const host = 'wss://mqtt-admin-mys-karlsruhe-0.makelove.expert/mqtt';
-const username = 'test';
-const password = 'TuC';
+const host = process.env.host;
+const username = process.env.username;
+const password = process.env.password;
+const deviceId = process.env.deviceId;
 const msgFreq = 60000 / 60; // interval ms
-const deviceID = process.argv[2];
 
 const options = {
     keepalive: 60,
@@ -86,7 +84,7 @@ client.on('end', () => {
 
 var intervalHandler = -1;
 
-var topic = `tele/indoor_sound_classification/${deviceID}/state`;
+var topic = `tele/indoor_sound_classification/${deviceId}/state`;
 
 client.on('connect', function () {
     console.log('Connection established');
@@ -94,14 +92,19 @@ client.on('connect', function () {
     clearInterval(intervalHandler);
     intervalHandler = setInterval(((client) => (_ => {
         if(connected) {
-            const timestamp = Date.now()
+            const timestamp = Date.now();
+            let sum = 0;
             const res = categories.reduce((acc, curr) => {
                 let noise = noise2D((hashFnv32a(curr)) >>> 8, (new Date().valueOf() & 0xfffffff) / 30.0 / msgFreq);
                 noise = (noise + 1) / 2;
                 noise = Math.sin(noise ** 3 * Math.PI / 2) ** 8;
                 acc[curr] = noise;
+                sum += noise;
                 return acc;
             }, {});
+            for(let tag in res) {
+                res[tag] = res[tag] / sum;
+            }
             // console.log(res);
             var msg = JSON.stringify({
                 timestamp: timestamp,
