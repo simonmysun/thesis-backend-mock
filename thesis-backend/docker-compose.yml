@@ -46,11 +46,15 @@ services:
   thesis-mqtt-mock-1:
     environment:
       deviceId: fake_datasource_1
+    env_file:
+      - ./thesis-mqtt-mock/.env
     build: 
       context: ./thesis-mqtt-mock/
   thesis-mqtt-mock-3:
     environment:
       deviceId: fake_datasource_3
+    env_file:
+      - ./thesis-mqtt-mock/.env
     build: 
       context: ./thesis-mqtt-mock/
   thesis-backend-grafana:
@@ -68,8 +72,8 @@ services:
       - traefik_reverse-proxy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.grafana.rule=Host(`thesis-backend-grafana-mys-karlsruhe-0.makelove.expert`)
-      - traefik.http.services.grafana.loadbalancer.server.port=3000
+      - traefik.http.routers.thesis-backend-grafana.rule=Host(`thesis-backend-grafana-mys-karlsruhe-0.makelove.expert`)
+      - traefik.http.services.thesis-backend-grafana.loadbalancer.server.port=3000
       - traefik.docker.network=traefik_reverse-proxy
 networks:
   thesis-backend:
