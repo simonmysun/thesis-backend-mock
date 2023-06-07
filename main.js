@@ -222,11 +222,13 @@ app.delete('/api/alerts/:alertId', (req, res) => {
 // app.get('/', (req, res) => {
 //   res.send('It works. ')
 // });
+const httpProxy = require('http-proxy');
+const staticProxy = httpProxy.createProxyServer({ target: 'http://localhost:3000' });
 
-const proxy = require('express-http-proxy');
-app.use('/', proxy('localhost:3000'));
-
-
+app.get('/*', function (req, res) {
+  console.log("proxying web request", req.url);
+  staticProxy.web(req, res);
+});
 app.listen(port, () => {
   console.log(`listening on port ${port}`)
 });
