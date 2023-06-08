@@ -68,7 +68,7 @@
             },
             "lineInterpolation": "smooth",
             "lineWidth": 1,
-            "pointSize": 3,
+            "pointSize": 1,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -151,7 +151,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 38,
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -160,7 +160,7 @@
             },
             "lineInterpolation": "smooth",
             "lineWidth": 0,
-            "pointSize": 3,
+            "pointSize": 1,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -337,140 +337,6 @@
       "type": "timeseries"
     },
     {
-      "config": {
-        "animationDuration": 0,
-        "cellPadding": 2,
-        "cellRadius": 0,
-        "cellSize": 10,
-        "displayLegend": true,
-        "domain": "auto",
-        "domainGutter": 2,
-        "hoverDecimals": 2,
-        "hoverUnitFormat": "short",
-        "itemName": [
-          "short",
-          "short"
-        ],
-        "label": {
-          "position": "bottom",
-          "rotate": "null",
-          "width": 60
-        },
-        "legendColors": {
-          "base": "transparent",
-          "empty": "#222",
-          "max": "steelblue",
-          "min": "#666"
-        },
-        "legendStr": "",
-        "legendTitleFormat": {
-          "inner": {},
-          "lower": {},
-          "upper": {}
-        },
-        "subDomain": "auto",
-        "subDomainTitleFormat": {
-          "empty": "{date}",
-          "filled": {}
-        },
-        "verticalOrientation": false
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 16,
-        "x": 0,
-        "y": 19
-      },
-      "id": 26,
-      "pluginVersion": "9.3.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum(indoor_sound_classification_prediction{device_id=\"$device_id\", tag=~\"$tag\"} >bool 0.3)",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Prediction (cal-heatmap)",
-      "type": "neocat-cal-heatmap-panel"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "calculation": "mean",
-            "colorPalette": "interpolateSpectral",
-            "colorSpace": "rgb",
-            "groupBy": 60,
-            "invertPalette": false,
-            "nullValueColor": "rgb(155, 155, 155)"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 14,
-        "w": 8,
-        "x": 16,
-        "y": 19
-      },
-      "id": 28,
-      "options": {
-        "from": "0",
-        "legendGradientQuality": "high",
-        "showCellBorder": false,
-        "showLegend": true,
-        "showTooltip": true,
-        "showValueIndicator": false,
-        "to": "0"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "sum(indoor_sound_classification_prediction{device_id=\"$device_id\", tag=~\"$tag\"})",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Prediction (hourly heatmap)",
-      "type": "marcusolsson-hourly-heatmap-panel"
-    },
-    {
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -501,7 +367,7 @@
         "h": 10,
         "w": 16,
         "x": 0,
-        "y": 24
+        "y": 19
       },
       "id": 13,
       "options": {
@@ -545,6 +411,73 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "calculation": "mean",
+            "colorPalette": "interpolateSpectral",
+            "colorSpace": "rgb",
+            "groupBy": 60,
+            "invertPalette": false,
+            "nullValueColor": "rgb(155, 155, 155)"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 22,
+        "w": 8,
+        "x": 16,
+        "y": 19
+      },
+      "id": 28,
+      "options": {
+        "from": "0",
+        "legendGradientQuality": "high",
+        "showCellBorder": false,
+        "showLegend": true,
+        "showTooltip": true,
+        "showValueIndicator": false,
+        "to": "0"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(indoor_sound_classification_prediction{device_id=\"$device_id\", tag=~\"$tag\"})",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Prediction (hourly heatmap)",
+      "type": "marcusolsson-hourly-heatmap-panel"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "continuous-BlYlRd"
           },
           "custom": {
@@ -571,9 +504,9 @@
       },
       "gridPos": {
         "h": 12,
-        "w": 12,
+        "w": 16,
         "x": 0,
-        "y": 34
+        "y": 29
       },
       "id": 24,
       "options": {
@@ -599,7 +532,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "indoor_sound_classification_prediction{device_id=\"$device_id\"} > 0.3",
+          "expr": "indoor_sound_classification_prediction{device_id=\"$device_id\", tag=~\"$tag\"} > 0.3",
           "legendFormat": "{{tag}}",
           "range": true,
           "refId": "A"
@@ -607,6 +540,148 @@
       ],
       "title": "Prediction (Status timeline)",
       "type": "state-timeline"
+    },
+    {
+      "config": {
+        "animationDuration": 0,
+        "cellPadding": "2",
+        "cellRadius": "3",
+        "cellSize": "10",
+        "colLimit": "",
+        "displayLegend": true,
+        "domain": "month",
+        "domainGutter": 2,
+        "hoverDecimals": 0,
+        "hoverUnitFormat": "none",
+        "itemName": [
+          "none",
+          "none"
+        ],
+        "label": {
+          "position": "bottom",
+          "rotate": "null",
+          "width": 60
+        },
+        "legendColors": {
+          "base": "transparent",
+          "empty": "#00000000",
+          "max": "#1F60C4",
+          "min": "#C0D8FF"
+        },
+        "legendStr": "",
+        "legendTitleFormat": {
+          "inner": {},
+          "lower": {},
+          "upper": {}
+        },
+        "linkTemplate": "",
+        "rowLimit": "7",
+        "subDomain": "auto",
+        "subDomainTitleFormat": {
+          "empty": "{date}",
+          "filled": {}
+        },
+        "verticalOrientation": false
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 41
+      },
+      "id": 26,
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time((indoor_sound_classification_prediction{device_id=\"$device_id\", tag=~\"$tag\"} > 0.3)[$__rate_interval:15s]))",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Prediction (week x month)",
+      "type": "neocat-cal-heatmap-panel"
+    },
+    {
+      "config": {
+        "animationDuration": 0,
+        "cellPadding": "4",
+        "cellRadius": "3",
+        "cellSize": "30",
+        "colLimit": "",
+        "displayLegend": true,
+        "domain": "day",
+        "domainGutter": 2,
+        "hoverDecimals": 0,
+        "hoverUnitFormat": "none",
+        "itemName": [
+          "none",
+          "none"
+        ],
+        "label": {
+          "position": "bottom",
+          "rotate": "null",
+          "width": 60
+        },
+        "legendColors": {
+          "base": "transparent",
+          "empty": "#00000000",
+          "max": "#1F60C4",
+          "min": "#C0D8FF"
+        },
+        "legendStr": "",
+        "legendTitleFormat": {
+          "inner": {},
+          "lower": {},
+          "upper": {}
+        },
+        "linkTemplate": "",
+        "rowLimit": "24",
+        "subDomain": "auto",
+        "subDomainTitleFormat": {
+          "empty": "{date}",
+          "filled": {}
+        },
+        "verticalOrientation": false
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 25,
+        "w": 12,
+        "x": 0,
+        "y": 46
+      },
+      "id": 29,
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time((indoor_sound_classification_prediction{device_id=\"$device_id\", tag=~\"$tag\"} > 0.3)[$__rate_interval:15s]))",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Prediction (hour x day)",
+      "type": "neocat-cal-heatmap-panel"
     },
     {
       "datasource": {
@@ -659,7 +734,7 @@
         "h": 17,
         "w": 12,
         "x": 12,
-        "y": 34
+        "y": 46
       },
       "id": 8,
       "options": {
@@ -718,74 +793,6 @@
         }
       ],
       "type": "barchart"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-BlYlRd"
-          },
-          "custom": {
-            "fillOpacity": 70,
-            "lineWidth": 1
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 11,
-        "w": 12,
-        "x": 0,
-        "y": 46
-      },
-      "id": 22,
-      "options": {
-        "colWidth": 0.9,
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "rowHeight": 0.9,
-        "showValue": "auto",
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "indoor_sound_classification_prediction{device_id=\"$device_id\"} > 0.3",
-          "legendFormat": "{{tag}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Prediction (Status history)",
-      "type": "status-history"
     }
   ],
   "refresh": "30s",
@@ -798,10 +805,10 @@
         "current": {
           "selected": true,
           "text": [
-            "fake_datasource_1"
+            "All"
           ],
           "value": [
-            "fake_datasource_1"
+            "$__all"
           ]
         },
         "datasource": {
@@ -829,16 +836,10 @@
         "current": {
           "selected": true,
           "text": [
-            "Alarmsignal",
-            "AstmaHusten",
-            "Blending",
-            "Bohren"
+            "All"
           ],
           "value": [
-            "Alarmsignal",
-            "AstmaHusten",
-            "Blending",
-            "Bohren"
+            "$__all"
           ]
         },
         "datasource": {
@@ -865,7 +866,7 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {},
