@@ -66,6 +66,7 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
     # plugins: grafana-cli plugins install neocat-cal-heatmap-panel
+    # plugins: grafana-cli plugins install marcusolsson-hourly-heatmap-panel
     networks:
       - thesis-backend
       - traefik_reverse-proxy
