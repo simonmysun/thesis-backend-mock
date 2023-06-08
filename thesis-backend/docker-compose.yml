@@ -65,8 +65,7 @@ services:
       - ./grafana/data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
-    # plugins: grafana-cli plugins install farski-blendstat-panel
-    # plugins: grafana-cli plugins install grafana-piechart-panel
+    # plugins: grafana-cli plugins install neocat-cal-heatmap-panel
     networks:
       - thesis-backend
       - traefik_reverse-proxy

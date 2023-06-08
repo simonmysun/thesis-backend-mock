@@ -24,7 +24,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 2,
-  "id": 6,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -337,6 +336,73 @@
       "type": "timeseries"
     },
     {
+      "config": {
+        "animationDuration": 0,
+        "cellPadding": 2,
+        "cellRadius": 0,
+        "cellSize": 10,
+        "displayLegend": true,
+        "domain": "auto",
+        "domainGutter": 2,
+        "hoverDecimals": 2,
+        "hoverUnitFormat": "short",
+        "itemName": [
+          "short",
+          "short"
+        ],
+        "label": {
+          "position": "bottom",
+          "rotate": "null",
+          "width": 60
+        },
+        "legendColors": {
+          "base": "transparent",
+          "empty": "#222",
+          "max": "steelblue",
+          "min": "#666"
+        },
+        "legendStr": "",
+        "legendTitleFormat": {
+          "inner": {},
+          "lower": {},
+          "upper": {}
+        },
+        "subDomain": "auto",
+        "subDomainTitleFormat": {
+          "empty": "{date}",
+          "filled": {}
+        },
+        "verticalOrientation": false
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 26,
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "indoor_sound_classification_prediction{device_id=\"$device_id\", tag=~\"$tag\"}",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Prediction (cal-heatmap)",
+      "type": "neocat-cal-heatmap-panel"
+    },
+    {
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -367,7 +433,7 @@
         "h": 17,
         "w": 12,
         "x": 0,
-        "y": 19
+        "y": 25
       },
       "id": 13,
       "options": {
@@ -454,7 +520,7 @@
         "h": 17,
         "w": 12,
         "x": 12,
-        "y": 19
+        "y": 25
       },
       "id": 8,
       "options": {
@@ -513,6 +579,145 @@
         }
       ],
       "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-BlYlRd"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 0,
+            "spanNulls": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 0.5
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 42
+      },
+      "id": 24,
+      "options": {
+        "alignValue": "center",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "mergeValues": false,
+        "rowHeight": 0.9,
+        "showValue": "never",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "indoor_sound_classification_prediction{device_id=\"$device_id\"} > 0.3",
+          "legendFormat": "{{tag}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Prediction (Status timeline)",
+      "type": "state-timeline"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-BlYlRd"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 1
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 42
+      },
+      "id": 22,
+      "options": {
+        "colWidth": 0.9,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "indoor_sound_classification_prediction{device_id=\"$device_id\"} > 0.3",
+          "legendFormat": "{{tag}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Prediction (Status history)",
+      "type": "status-history"
     }
   ],
   "refresh": "30s",
@@ -551,17 +756,46 @@
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "AstmaHusten",
+            "Blending"
+          ],
+          "value": [
+            "AstmaHusten",
+            "Blending"
+          ]
+        },
+        "definition": "label_values(indoor_sound_classification_prediction, tag)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "tag",
+        "multi": true,
+        "name": "tag",
+        "options": [],
+        "query": {
+          "query": "label_values(indoor_sound_classification_prediction, tag)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Indoor sound classification",
   "uid": "s4WuoHlVz",
-  "version": 5,
+  "version": 6,
   "weekStart": ""
 }
