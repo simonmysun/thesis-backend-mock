@@ -461,7 +461,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(indoor_sound_classification_prediction{device_id=\"$device_id\", tag=~\"$tag\"})",
+          "expr": "sum(count_over_time((indoor_sound_classification_prediction{device_id=\"$device_id\", tag=~\"$tag\"} > 0.3)[$__rate_interval:15s]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -609,7 +609,7 @@
           "refId": "A"
         }
       ],
-      "title": "Prediction (week x month)",
+      "title": "Prediction (weekday x day)",
       "type": "neocat-cal-heatmap-panel"
     },
     {
@@ -795,7 +795,7 @@
       "type": "barchart"
     }
   ],
-  "refresh": "30s",
+  "refresh": false,
   "schemaVersion": 37,
   "style": "dark",
   "tags": [],
@@ -803,7 +803,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
             "All"
           ],
@@ -866,13 +866,13 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Indoor sound classification",
   "uid": "s4WuoHlVz",
-  "version": 7,
+  "version": 10,
   "weekStart": ""
 }
