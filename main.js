@@ -138,19 +138,6 @@ app.post('/api/devices/:deviceId', (req, res) => {
     db.devices[req.params.deviceId] = {
       name: req.body.name,
       comment: req.body.comment,
-      lastFired: req.body.lastFired,
-      rule: {
-        alertName: req.body.name,
-        expression: req.body.rule.expression,
-        for: req.body.rule.for,
-        labels: {
-          severity: req.body.rule.lables.severity
-        },
-        annotations: {
-          summary: req.body.rule.annotations.summary,
-          description: req.body.rule.annotations.description
-        }
-      },
     }
     res.send('200');
   } else {
@@ -300,13 +287,11 @@ app.delete('/api/alerts/:alertId', (req, res) => {
 // app.get('/', (req, res) => {
 //   res.send('It works. ')
 // });
-const httpProxy = require('http-proxy');
-const staticProxy = httpProxy.createProxyServer({ target: 'http://localhost:3000' });
 
-app.get('/*', function (req, res) {
-  console.log("proxying web request", req.url);
-  staticProxy.web(req, res);
-});
+const proxy = require('express-http-proxy');
+app.use('/', proxy('localhost:3000'));
+
+
 app.listen(port, () => {
   console.log(`listening on port ${port}`)
 });
