@@ -66,17 +66,53 @@ const db = {
     alert_demo_1: {
       name: 'alert_demo_1',
       comment: 'This is a commment',
-      lastFired: new Date().toISOString(),
+      lastFired: new Date(0).toISOString(),
+      rule: {
+        alertName: '',
+        expression: '',
+        for: '',
+        labels: {
+          severity: ''
+        },
+        annotations: {
+          summary: '',
+          description: ''
+        }
+      },
     },
     alert_demo_2: {
       name: 'alert_demo_2',
       comment: 'This is a commment',
-      lastFired: new Date().toISOString(),
+      lastFired: new Date(0).toISOString(),
+      rule: {
+        alertName: '',
+        expression: '',
+        for: '',
+        labels: {
+          severity: ''
+        },
+        annotations: {
+          summary: '',
+          description: ''
+        }
+      },
     },
     alert_demo_3: {
       name: 'alert_demo_3',
       comment: 'This is a commment',
-      lastFired: new Date().toISOString(),
+      lastFired: new Date(0).toISOString(),
+      rule: {
+        alertName: '',
+        expression: '',
+        for: '',
+        labels: {
+          severity: ''
+        },
+        annotations: {
+          summary: '',
+          description: ''
+        }
+      },
     },
   },
 };
@@ -189,8 +225,21 @@ app.get('/api/alerts/:alertId', (req, res) => {
 app.post('/api/alerts/:alertId', (req, res) => {
   if(req.params.alertId in db.alerts) {
     db.alerts[req.params.alertId] = {
-      name: req.body.name,
+      name: req.params.alertId,
       comment: req.body.comment,
+      lastFired: req.body.lastFired,
+      rule: {
+        alertName: req.body.name,
+        expression: req.body.rule.expression,
+        for: req.body.rule.for,
+        labels: {
+          severity: req.body.rule.labels.severity
+        },
+        annotations: {
+          summary: req.body.rule.annotations.summary,
+          description: req.body.rule.annotations.description
+        }
+      },
     }
     res.send('200');
   } else {
@@ -204,7 +253,23 @@ app.put('/api/alerts/:alertId', (req, res) => {
     res.status(409);
     res.send('409');
   } else {
-    db.alerts[req.params.alertId].comment = req.body.comment;
+    db.alerts[req.params.alertId] = {
+      name: req.params.alertId,
+      comment: req.body.comment,
+      lastFired: req.body.lastFired,
+      rule: {
+        alertName: req.body.name,
+        expression: req.body.rule.expression,
+        for: req.body.rule.for,
+        labels: {
+          severity: req.body.rule.labels.severity
+        },
+        annotations: {
+          summary: req.body.rule.annotations.summary,
+          description: req.body.rule.annotations.description
+        }
+      },
+    }
     res.send('200');
   }
 });
