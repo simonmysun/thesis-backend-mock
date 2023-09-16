@@ -289,7 +289,7 @@ app.delete('/api/alerts/:alertId', (req, res) => {
 // });
 
 const proxy = require('express-http-proxy');
-app.use('/', proxy('thesis-frontend-static.makelove.expert'));
+app.use('/', proxy('https://thesis-frontend-static.makelove.expert'));
 
 
 app.listen(port, () => {
