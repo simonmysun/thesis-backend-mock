@@ -12,7 +12,8 @@
     "winston": "^3.8.2"
   },
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "mqtt_client": "node mqtt.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
