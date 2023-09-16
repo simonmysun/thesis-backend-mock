@@ -7,7 +7,7 @@ const host = process.env.host;
 const username = process.env.username;
 const password = process.env.password;
 const deviceId = process.env.deviceId;
-const msgFreq = 60000 / 60; // interval ms
+const msgFreq = process.env.msgFreq ? process.env.msgFreq : 60000 / 60; // interval ms
 
 const options = {
     keepalive: 60,
