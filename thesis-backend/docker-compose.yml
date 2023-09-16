@@ -46,6 +46,7 @@ services:
   thesis-backend-mqtt-mock-1:
     environment:
       deviceId: fake_datasource_1
+      msgFreq: 1000
     env_file:
       - ./.env
     build: 
@@ -53,6 +54,7 @@ services:
   thesis-backend-mqtt-mock-3:
     environment:
       deviceId: fake_datasource_3
+      msgFreq: 200
     env_file:
       - ./.env
     build: 
