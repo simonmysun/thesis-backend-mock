@@ -15,7 +15,7 @@ services:
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--web.enable-lifecycle'
-    expose: 
+    expose:
       - 9090
     networks:
       - thesis-backend
@@ -31,25 +31,23 @@ services:
     networks:
       - thesis-backend
   thesis-backend-mock:
-    build: 
-      ./thesis-backend-mock/
+    build: ./thesis-backend-mock/
     expose:
       - 3001
     labels:
       - traefik.enable=true
       - traefik.http.routers.thesis-backend-mock.rule=Host(`thesis-frontend.makelove.expert`)
       - traefik.http.services.thesis-backend-mock.loadbalancer.server.port=3001
-      - traefik.docker.network=traefik_reverse-proxy
+      - traefik.docker.network=thesis-backend
     networks:
       - thesis-backend
-      - traefik_reverse-proxy
   thesis-backend-mqtt-mock-1:
     environment:
       deviceId: fake_datasource_1
       msgFreq: 1000
     env_file:
       - ./.env
-    build: 
+    build:
       context: ./thesis-backend-mqtt-mock/
   thesis-backend-mqtt-mock-3:
     environment:
@@ -57,7 +55,7 @@ services:
       msgFreq: 200
     env_file:
       - ./.env
-    build: 
+    build:
       context: ./thesis-backend-mqtt-mock/
   thesis-backend-grafana:
     image: grafana/grafana:9.3.2@sha256:2a73ae33c9f0c51af6eced2ef185d5d3682b4c378c4fdd6941a14e8ea4a3e95b
@@ -71,12 +69,11 @@ services:
     # plugins: grafana-cli plugins install marcusolsson-hourly-heatmap-panel
     networks:
       - thesis-backend
-      - traefik_reverse-proxy
     labels:
       - traefik.enable=true
       - traefik.http.routers.thesis-backend-grafana.rule=Host(`thesis-backend-grafana-mys-karlsruhe-0.makelove.expert`)
       - traefik.http.services.thesis-backend-grafana.loadbalancer.server.port=3000
-      - traefik.docker.network=traefik_reverse-proxy
+      - traefik.docker.network=thesis-backend
   thesis-backend-mqtt-exporter:
     expose:
       - 9000
@@ -84,12 +81,10 @@ services:
       topic: tele/indoor_sound_classification/+/state
     env_file:
       - ./.env
-    build: 
+    build:
       context: ./thesis-backend-mqtt-exporter/
     networks:
       - thesis-backend
 networks:
   thesis-backend:
     driver: bridge
-  traefik_reverse-proxy:
-    external: true
