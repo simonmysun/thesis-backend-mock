@@ -32,6 +32,7 @@ services:
       - thesis-backend
   thesis-backend-mock:
     build: ./thesis-backend-mock/
+    restart: unless-stopped
     expose:
       - 3001
     labels:
@@ -49,6 +50,9 @@ services:
       - ./.env
     build:
       context: ./thesis-backend-mqtt-mock/
+    restart: unless-stopped
+    networks:
+      - thesis-backend
   thesis-backend-mqtt-mock-3:
     environment:
       deviceId: fake_datasource_3
@@ -57,8 +61,12 @@ services:
       - ./.env
     build:
       context: ./thesis-backend-mqtt-mock/
+    restart: unless-stopped
+    networks:
+      - thesis-backend
   thesis-backend-grafana:
     image: grafana/grafana:9.3.2@sha256:2a73ae33c9f0c51af6eced2ef185d5d3682b4c378c4fdd6941a14e8ea4a3e95b
+    restart: unless-stopped
     expose:
       - 3000
     volumes:
@@ -85,6 +93,7 @@ services:
       context: ./thesis-backend-mqtt-exporter/
     networks:
       - thesis-backend
+    restart: unless-stopped
 networks:
   thesis-backend:
     driver: bridge
