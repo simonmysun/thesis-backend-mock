@@ -7,7 +7,7 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("$SYS/#")
+    client.subscribe("tele/indoor_sound_classification/+/state")
     topic = "paho/t"
     message = "b"
     print("sending \"%s\" on \"%s\"" % (topic, message))
@@ -15,7 +15,7 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
+    print("received on \"%s\" : \"%s\" " % (msg.topic, str(msg.payload)))
 
 client_id = 'data_source_py_%030x' % random.randrange(16 ** 30)
 print("Initializing MQTT Client %s" % client_id)
