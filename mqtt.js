@@ -27,7 +27,7 @@ const options = {
     },
 };
 
-const categories = ['Alarmsignal','AstmaHusten','Blending','Bohren','CovidHusten','Doseöffnen','Electronic_Zahnbürste','Etwas-am-Boden-ziehen','Fenster','Feuerzeug','Flöte','Fußstapfen-gehen','GesunderHusten','Gitarre','Glas','Haartrockner','Hahn','Handsäge','Huhn','Hund','Katze','Klarinette','Klassenname','klatschen','Klingelton','Küssen','Lachen','Mausklick','Metall-auf-Metall','Möbelrücken','Niesen','Pfeifen','Presslufthammer','Ruhe','Schlag','Schlagzeug','Schnarchen','Sirene','Sitar','SprechendeFrau','SprechenderMann','Staubsauger','Tastatur-tippen','Toilettenspülung','Trampler','Trinken','Türklingel','Türklopfen','Uhr-ticken','Vandalismus','Waschmaschine','Wasser','Weinen','Wimmern','Wind','Zahnbürste','Zerbrechen','ZwitscherndeVögel'];
+const categories = ['Alarmsignal', 'AstmaHusten', 'Blending', 'Bohren', 'CovidHusten', 'Doseöffnen', 'Electronic_Zahnbürste', 'Etwas-am-Boden-ziehen', 'Fenster', 'Feuerzeug', 'Flöte', 'Fußstapfen-gehen', 'GesunderHusten', 'Gitarre', 'Glas', 'Haartrockner', 'Hahn', 'Handsäge', 'Huhn', 'Hund', 'Katze', 'Klarinette', 'Klassenname', 'klatschen', 'Klingelton', 'Küssen', 'Lachen', 'Mausklick', 'Metall-auf-Metall', 'Möbelrücken', 'Niesen', 'Pfeifen', 'Presslufthammer', 'Ruhe', 'Schlag', 'Schlagzeug', 'Schnarchen', 'Sirene', 'Sitar', 'SprechendeFrau', 'SprechenderMann', 'Staubsauger', 'Tastatur-tippen', 'Toilettenspülung', 'Trampler', 'Trinken', 'Türklingel', 'Türklopfen', 'Uhr-ticken', 'Vandalismus', 'Waschmaschine', 'Wasser', 'Weinen', 'Wimmern', 'Wind', 'Zahnbürste', 'Zerbrechen', 'ZwitscherndeVögel'];
 
 const noise2D = createNoise2D();
 
@@ -39,7 +39,7 @@ function hashFnv32a(str, asString, seed) {
         hval ^= str.charCodeAt(i);
         hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
     }
-    if(asString){
+    if (asString) {
         // Convert to 8 digit hex string
         return ("0000000" + (hval >>> 0).toString(16)).slice(-8);
     }
@@ -91,7 +91,7 @@ client.on('connect', function () {
     connected = true;
     clearInterval(intervalHandler);
     intervalHandler = setInterval(((client) => (_ => {
-        if(connected) {
+        if (connected) {
             const timestamp = Date.now();
             let sum = 0;
             const res = categories.reduce((acc, curr) => {
@@ -102,7 +102,7 @@ client.on('connect', function () {
                 sum += noise;
                 return acc;
             }, {});
-            for(let tag in res) {
+            for (let tag in res) {
                 res[tag] = res[tag] / sum;
             }
             // console.log(res);
