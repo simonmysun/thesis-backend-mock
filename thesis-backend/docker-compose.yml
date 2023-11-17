@@ -1,12 +1,14 @@
 version: '3.8'
 services:
-  thesis-backend-prometheus:
+  prometheus:
+    container_name: "thesis-backend_prometheus"
     image: prom/prometheus:v2.41.0@sha256:1a3e9a878e50cd339ae7cf5718fda08381dda2d4ccd28e94bbaa3190d1a566c2
     restart: unless-stopped
     user: 1000:1000
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./prometheus/rules/:/etc/prometheus/rules/:ro
+      - ./db/alerts.yml:/etc/prometheus/rules/alerts.yml
       - ./prometheus/data/:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -19,7 +21,8 @@ services:
       - 9090
     networks:
       - thesis-backend
-  thesis-backend-alertmanager:
+  alertmanager:
+    container_name: "thesis-backend_alertmanager"
     image: prom/alertmanager:v0.25.0@sha256:fd4d9a3dd1fd0125108417be21be917f19cc76262347086509a0d43f29b80e98
     restart: unless-stopped
     expose:
@@ -30,7 +33,8 @@ services:
     command: --config.file=/config/alertmanager.yml --log.level=debug
     networks:
       - thesis-backend
-  thesis-backend-mock:
+  backend-mock:
+    container_name: "thesis-backend_backend-mock"
     build: ./thesis-backend-mock/
     restart: unless-stopped
     volumes:
@@ -44,7 +48,8 @@ services:
       - traefik.docker.network=thesis-backend
     networks:
       - thesis-backend
-  thesis-backend-mqtt-mock-1:
+  mqtt-mock-1:
+    container_name: "thesis-backend_mqtt-mock-1"
     environment:
       deviceId: fake_datasource_1
       msgFreq: 1000
@@ -55,7 +60,8 @@ services:
     restart: unless-stopped
     networks:
       - thesis-backend
-  thesis-backend-mqtt-mock-3:
+  mqtt-mock-3:
+    container_name: "thesis-backend_mqtt-mock-3"
     environment:
       deviceId: fake_datasource_3
       msgFreq: 200
@@ -66,7 +72,8 @@ services:
     restart: unless-stopped
     networks:
       - thesis-backend
-  thesis-backend-grafana:
+  grafana:
+    container_name: "thesis-backend_grafana"
     image: grafana/grafana:9.3.2@sha256:2a73ae33c9f0c51af6eced2ef185d5d3682b4c378c4fdd6941a14e8ea4a3e95b
     restart: unless-stopped
     expose:
@@ -85,6 +92,7 @@ services:
       - traefik.http.services.thesis-backend-grafana.loadbalancer.server.port=3000
       - traefik.docker.network=thesis-backend
   thesis-backend-mqtt-exporter:
+    container_name: "thesis-backend_thesis-backend-mqtt-exporter"
     expose:
       - 9000
     environment:

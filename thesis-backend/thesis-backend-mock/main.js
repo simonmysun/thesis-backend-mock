@@ -1,8 +1,11 @@
-const express = require('express');
-const fs = require('fs');
+import express from 'express';
+import fs from 'fs';
+import winston from 'winston';
+import yaml from 'js-yaml';
+import fetch from 'node-fetch';
+import expressWinston from 'express-winston';
+
 const app = express();
-const winston = require('winston');
-const expressWinston = require('express-winston');
 const port = 3001;
 
 const formatter = winston.format.printf(({ timestamp, level, message, meta }) => {
@@ -53,6 +56,7 @@ app.get('/api/devices', (req, res) => {
     if (err) {
       console.error(err);
       res.status(500);
+      res.send('500');
       return;
     }
     const devices = [];
@@ -69,6 +73,7 @@ app.get('/api/devices/:deviceId', (req, res) => {
       if (err) {
         console.error(err);
         res.status(500);
+        res.send('500');
         return;
       }
       res.send(data);
@@ -92,6 +97,7 @@ app.post('/api/devices/:deviceId', (req, res) => {
         if (err) {
           console.error(err);
           res.status(500);
+          res.send('500');
           return;
         }
         res.send('200');
@@ -129,6 +135,7 @@ app.put('/api/devices/:deviceId', (req, res) => {
         if (err) {
           console.error(err);
           res.status(500);
+          res.send('500');
           return;
         }
         res.send('200');
@@ -176,13 +183,14 @@ app.get('/api/alerts', (req, res) => {
     if (err) {
       console.error(err);
       res.status(500);
+      res.send('500');
       return;
     }
-    const devices = [];
+    const alerts = [];
     files.forEach(file => {
-      devices.push(JSON.parse(fs.readFileSync(`./db/alerts/${file}`, { encoding: 'utf8', flag: 'r' })));
+      alerts.push(JSON.parse(fs.readFileSync(`./db/alerts/${file}`, { encoding: 'utf8', flag: 'r' })));
     });
-    res.send(JSON.stringify(devices));
+    res.send(JSON.stringify(alerts));
   });
 });
 
@@ -192,6 +200,7 @@ app.get('/api/alerts/:alertId', (req, res) => {
       if (err) {
         console.error(err);
         res.status(500);
+        res.send('500');
         return;
       }
       res.send(data);
@@ -228,6 +237,7 @@ app.post('/api/alerts/:alertId', (req, res) => {
         if (err) {
           console.error(err);
           res.status(500);
+          res.send('500');
           return;
         }
         res.send('200');
@@ -284,11 +294,66 @@ app.delete('/api/alerts/:alertId', (req, res) => {
   }
 });
 
+app.get('/api/reload', (req, res) => {
+  fs.readdir('./db/alerts/', (err, files) => {
+    if (err) {
+      console.error(err);
+      res.status(500);
+      return;
+    }
+    let alerts = [];
+    files.forEach(file => {
+      alerts.push(JSON.parse(fs.readFileSync(`./db/alerts/${file}`, { encoding: 'utf8', flag: 'r' })));
+    });
+    alerts = alerts.map(alert => ({
+      alert: alert.name,
+      expr: alert.rule.expression,
+      for: alert.rule.for,
+      labels: {
+        severity: alert.rule.labels.severity
+      },
+      annotations: {
+        summary: alert.rule.annotations.summary,
+        description: alert.rule.annotations.description
+      }
+    }));
+    fs.writeFile(`./db/alerts.yml`, yaml.dump({
+      groups: [
+        {
+          name: 'indoor-sound-classification',
+          rules: alerts
+        }
+      ]
+    }),
+      {
+        encoding: "utf8",
+        flag: "w",
+      }, (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500);
+          res.send('500');
+          return;
+        }
+        fetch('http://thesis-backend_prometheus:9090/-/reload', {
+          method: 'POST',
+        }).then(_ => {
+          res.send('200');
+
+        }).catch(err => {
+          console.error(err);
+          res.status(500);
+          res.send('500');
+        });
+      });
+  });
+});
+
 // app.get('/', (req, res) => {
 //   res.send('It works. ')
 // });
 
-const proxy = require('express-http-proxy');
+import proxy from 'express-http-proxy';
 app.use('/', proxy('https://thesis-frontend-static.makelove.expert'));
 
 

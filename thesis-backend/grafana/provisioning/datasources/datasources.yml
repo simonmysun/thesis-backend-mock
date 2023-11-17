@@ -8,7 +8,7 @@ datasources:
     type: prometheus
     access: proxy
     orgId: 1
-    url: http://thesis-backend-prometheus:9090
+    url: http://thesis-backend_prometheus:9090
     basicAuth: false
     isDefault: true
     editable: false
