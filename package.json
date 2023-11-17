@@ -7,10 +7,13 @@
     "express": "^4.18.2",
     "express-http-proxy": "^1.6.3",
     "express-winston": "^4.2.0",
+    "js-yaml": "^4.1.0",
     "mqtt": "^4.3.7",
+    "node-fetch": "^3.3.2",
     "simplex-noise": "^4.0.0",
     "winston": "^3.8.2"
   },
+  "type": "module",
   "scripts": {
     "start": "node main.js",
     "mqtt_client": "node mqtt.js"
