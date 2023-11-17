@@ -1,0 +1,25 @@
+groups:
+  - name: indoor-sound-classification
+    rules:
+      - alert: Coughing-to-much
+        expr: >-
+          count_over_time((indoor_sound_classification_prediction{device_id="fake_datasource_1",tag=~"(AstmaHusten|CovidHusten|GesunderHusten)"}
+          > 0.3)[10m:]) > 2
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Coughing to much
+          description: >-
+            Coughing detected more than 3 times within 15 minutes: {{ $value }}
+            times
+      - alert: Dog-spotted
+        expr: >-
+          count_over_time((indoor_sound_classification_prediction{device_id="fake_datasource_1",tag=~"(Hund)"}
+          > 0.3)[10m:]) > 1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Dog spotted
+          description: 'Dog detected more than 3 times within 15 minutes: {{ $value }} times'
