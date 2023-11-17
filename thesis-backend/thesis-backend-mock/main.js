@@ -1,11 +1,12 @@
 const express = require('express');
+const fs = require('fs');
 const app = express();
 const winston = require('winston');
 const expressWinston = require('express-winston');
 const port = 3001;
 
 const formatter = winston.format.printf(({ timestamp, level, message, meta }) => {
-  return `${timestamp} ${level} ${message} ${meta? JSON.stringify(meta) : ''}`;
+  return `${timestamp} ${level} ${message} ${meta ? JSON.stringify(meta) : ''}`;
 });
 
 const logger = winston.createLogger({
@@ -18,7 +19,7 @@ const logger = winston.createLogger({
     winston.format.splat(),
     winston.format.colorize(),
     winston.format.printf(({ timestamp, level, message, meta }) => {
-      return `${timestamp} ${level} ${message} ${meta? JSON.stringify(meta) : ''}`;
+      return `${timestamp} ${level} ${message} ${meta ? JSON.stringify(meta) : ''}`;
     }),
   ),
   transports: [
@@ -37,9 +38,9 @@ app.use(expressWinston.logger({
     }),
     winston.format.colorize(),
     winston.format.printf(({ timestamp, level, message, meta }) => {
-      return `${timestamp} ${level} ${message} ${meta? JSON.stringify(meta) : ''}`;
+      return `${timestamp} ${level} ${message} ${meta ? JSON.stringify(meta) : ''}`;
     }),
-  ), 
+  ),
   meta: false,
   expressFormat: true,
   colorize: true,
@@ -47,86 +48,31 @@ app.use(expressWinston.logger({
 
 app.use(express.json());
 
-const db = {
-  devices: {
-    fake_datasource_1: {
-      name: 'fake_datasource_1',
-      comment: 'This is a commment',
-    },
-    fake_datasource_2: {
-      name: 'fake_datasource_2',
-      comment: 'This is a commment',
-    },
-    fake_datasource_3: {
-      name: 'fake_datasource_3',
-      comment: 'This is a commment',
-    },
-  },
-  alerts: {
-    alert_demo_1: {
-      name: 'alert_demo_1',
-      comment: 'This is a commment',
-      lastFired: new Date(0).toISOString(),
-      rule: {
-        alertName: '',
-        expression: '',
-        for: '',
-        labels: {
-          severity: ''
-        },
-        annotations: {
-          summary: '',
-          description: ''
-        }
-      },
-    },
-    alert_demo_2: {
-      name: 'alert_demo_2',
-      comment: 'This is a commment',
-      lastFired: new Date(0).toISOString(),
-      rule: {
-        alertName: '',
-        expression: '',
-        for: '',
-        labels: {
-          severity: ''
-        },
-        annotations: {
-          summary: '',
-          description: ''
-        }
-      },
-    },
-    alert_demo_3: {
-      name: 'alert_demo_3',
-      comment: 'This is a commment',
-      lastFired: new Date(0).toISOString(),
-      rule: {
-        alertName: '',
-        expression: '',
-        for: '',
-        labels: {
-          severity: ''
-        },
-        annotations: {
-          summary: '',
-          description: ''
-        }
-      },
-    },
-  },
-};
-
 app.get('/api/devices', (req, res) => {
-  res.send(JSON.stringify(Object.keys(db.devices).map(name => ({
-    name: name,
-    comment: db.devices[name].comment,
-  }))));
+  fs.readdir('./db/devices/', (err, files) => {
+    if (err) {
+      console.error(err);
+      res.status(500);
+      return;
+    }
+    const devices = [];
+    files.forEach(file => {
+      devices.push(JSON.parse(fs.readFileSync(`./db/devices/${file}`, { encoding: 'utf8', flag: 'r' })));
+    });
+    res.send(JSON.stringify(devices));
+  });
 });
 
 app.get('/api/devices/:deviceId', (req, res) => {
-  if(req.params.deviceId in db.devices) {
-    res.send(JSON.stringify(db.devices[req.params.deviceId]))
+  if (fs.existsSync(`./db/devices/${req.params.deviceId}.json`)) {
+    fs.readFile(`./db/devices/${req.params.deviceId}.json`, 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        res.status(500);
+        return;
+      }
+      res.send(data);
+    });
   } else {
     res.status(404);
     res.send('404');
@@ -134,12 +80,22 @@ app.get('/api/devices/:deviceId', (req, res) => {
 });
 
 app.post('/api/devices/:deviceId', (req, res) => {
-  if(req.params.deviceId in db.devices) {
-    db.devices[req.params.deviceId] = {
+  if (fs.existsSync(`./db/devices/${req.params.deviceId}.json`)) {
+    fs.writeFile(`./db/devices/${req.params.deviceId}.json`, JSON.stringify({
       name: req.body.name,
       comment: req.body.comment,
-    }
-    res.send('200');
+    }),
+      {
+        encoding: "utf8",
+        flag: "w",
+      }, (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500);
+          return;
+        }
+        res.send('200');
+      });
   } else {
     res.status(404);
     res.send('404');
@@ -158,15 +114,25 @@ fetch('/api/devices/fake_datasource_1', {
  */
 
 app.put('/api/devices/:deviceId', (req, res) => {
-  if(req.params.deviceId in db.devices) {
+  if (fs.existsSync(`./db/devices/${req.params.deviceId}.json`)) {
     res.status(409);
     res.send('409');
   } else {
-    db.devices[req.params.deviceId] = {
-      name: req.params.deviceId,
+    fs.writeFile(`./db/devices/${req.params.deviceId}.json`, JSON.stringify({
+      name: req.body.name,
       comment: req.body.comment,
-    };
-    res.send('200');
+    }),
+      {
+        encoding: "utf8",
+        flag: "w",
+      }, (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500);
+          return;
+        }
+        res.send('200');
+      });
   }
 });
 
@@ -182,8 +148,8 @@ fetch('/api/devices/test_add', {
 */
 
 app.delete('/api/devices/:deviceId', (req, res) => {
-  if(req.params.deviceId in db.devices) {
-    delete db.devices[req.params.deviceId];
+  if (fs.existsSync(`./db/devices/${req.params.deviceId}.json`)) {
+    fs.rmSync(`./db/devices/${req.params.deviceId}.json`)
     res.send('200');
   } else {
     res.status(404);
@@ -206,16 +172,30 @@ fetch('/api/devices/fake_datasource_1', {
 
 
 app.get('/api/alerts', (req, res) => {
-  res.send(JSON.stringify(Object.keys(db.alerts).map(name => ({
-    name: name,
-    comment: db.alerts[name].comment,
-    lastFired: db.alerts[name].lastFired,
-  }))));
+  fs.readdir('./db/alerts/', (err, files) => {
+    if (err) {
+      console.error(err);
+      res.status(500);
+      return;
+    }
+    const devices = [];
+    files.forEach(file => {
+      devices.push(JSON.parse(fs.readFileSync(`./db/alerts/${file}`, { encoding: 'utf8', flag: 'r' })));
+    });
+    res.send(JSON.stringify(devices));
+  });
 });
 
 app.get('/api/alerts/:alertId', (req, res) => {
-  if(req.params.alertId in db.alerts) {
-    res.send(JSON.stringify(db.alerts[req.params.alertId]))
+  if (fs.existsSync(`./db/alerts/${req.params.alertId}.json`)) {
+    fs.readFile(`./db/alerts/${req.params.alertId}.json`, 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        res.status(500);
+        return;
+      }
+      res.send(data);
+    });
   } else {
     res.status(404);
     res.send('404');
@@ -223,8 +203,8 @@ app.get('/api/alerts/:alertId', (req, res) => {
 });
 
 app.post('/api/alerts/:alertId', (req, res) => {
-  if(req.params.alertId in db.alerts) {
-    db.alerts[req.params.alertId] = {
+  if (fs.existsSync(`./db/alerts/${req.params.alertId}.json`)) {
+    fs.writeFile(`./db/alerts/${req.params.alertId}.json`, JSON.stringify({
       name: req.params.alertId,
       comment: req.body.comment,
       lastFired: req.body.lastFired,
@@ -240,8 +220,18 @@ app.post('/api/alerts/:alertId', (req, res) => {
           description: req.body.rule.annotations.description
         }
       },
-    }
-    res.send('200');
+    }),
+      {
+        encoding: "utf8",
+        flag: "w",
+      }, (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500);
+          return;
+        }
+        res.send('200');
+      });
   } else {
     res.status(404);
     res.send('404');
@@ -249,11 +239,11 @@ app.post('/api/alerts/:alertId', (req, res) => {
 });
 
 app.put('/api/alerts/:alertId', (req, res) => {
-  if(req.params.alertId in db.alerts) {
+  if (fs.existsSync(`./db/alerts/${req.params.alertId}.json`)) {
     res.status(409);
     res.send('409');
   } else {
-    db.alerts[req.params.alertId] = {
+    fs.writeFile(`./db/alerts/${req.params.alertId}.json`, JSON.stringify({
       name: req.params.alertId,
       comment: req.body.comment,
       lastFired: req.body.lastFired,
@@ -269,14 +259,24 @@ app.put('/api/alerts/:alertId', (req, res) => {
           description: req.body.rule.annotations.description
         }
       },
-    }
-    res.send('200');
+    }),
+      {
+        encoding: "utf8",
+        flag: "w",
+      }, (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500);
+          return;
+        }
+        res.send('200');
+      });
   }
 });
 
 app.delete('/api/alerts/:alertId', (req, res) => {
-  if(req.params.alertId in db.alerts) {
-    delete db.alerts[req.params.alertId];
+  if (fs.existsSync(`./db/alerts/${req.params.alertId}.json`)) {
+    fs.rmSync(`./db/alerts/${req.params.alertId}.json`)
     res.send('200');
   } else {
     res.status(404);

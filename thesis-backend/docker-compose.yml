@@ -33,6 +33,8 @@ services:
   thesis-backend-mock:
     build: ./thesis-backend-mock/
     restart: unless-stopped
+    volumes:
+      - ./db/:/usr/src/app/db
     expose:
       - 3001
     labels:
