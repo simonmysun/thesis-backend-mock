@@ -40,7 +40,24 @@ np.random.seed(42)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 
-
+import uuid
+import paho.mqtt.client as mqtt
+def mqtt_on_connect(mqtt_client, userdata, flags, rc):
+    print("[MQTT] Connected with result code "+str(rc))
+def mqtt_on_message(mqtt_client, userdata, msg):
+    print("[MQTT] received on \"%s\" : \"%s\" " % (msg.topic, str(msg.payload)))
+mqtt_client_id = 'data_source_py_%s' % uuid.uuid4()
+print("[MQTT] Initializing MQTT Client %s" % mqtt_client_id)
+mqtt_topic = "tele/indoor_sound_classification/fake_datasource_2/state"
+mqtt_client = mqtt.Client(mqtt_client_id)
+mqtt_client.on_connect = mqtt_on_connect
+mqtt_client.on_message = mqtt_on_message
+mqtt_client.username_pw_set(username="TuCDataSource", password="b52393dda08af7a991e7af074f377997a082f652")
+mqtt_client.connect("mqtt.makelove.expert", port=1883, keepalive=60)
+mqtt_client.loop_start()
+mqtt_time_last_send = time.time()
+mqtt_msg_freq = 1 / 20
+mqtt_debounce = list()
 
 ##################################################################################################################################################################################
 AAL_CODE  = {
@@ -225,7 +242,7 @@ class STFT(DFTBase):
         fft_window = librosa.filters.get_window(window, win_length, fftbins=True)
 
         # Pad the window out to n_fft size
-        fft_window = librosa.util.pad_center(fft_window, n_fft)
+        fft_window = librosa.util.pad_center(fft_window, size=n_fft)
 
         # DFT & IDFT matrix
         self.W = self.dft_matrix(n_fft)
@@ -826,6 +843,8 @@ def record():
 def analyzeStream(model,threshold,clip_threshold):
 
     global scnt
+    global mqtt_time_last_send
+    global mqtt_debounce
 
     # Time
     start = time.time()
@@ -877,7 +896,17 @@ def analyzeStream(model,threshold,clip_threshold):
            clipwise_outputs = prediction["clipwise_output"].detach(
                 ).cpu().numpy()[0].mean(axis=0)
                 
-        
+        now = time.time()
+        if now > mqtt_time_last_send + mqtt_msg_freq and len(mqtt_debounce) > 0:
+            e_z = np.exp(np.average(np.log(mqtt_debounce), axis=0))
+            res = e_z / sum(e_z)
+            mqtt_message = '{{"timestamp":{},"sampleRate":{},"prediction":{{{}}}}}'.format(now * 1000, mqtt_msg_freq * 1000, ','.join([f'"{AAL_CODE_dict_german[40] if idx == 17 else AAL_CODE_dict_german[idx]}":{output}' for idx, output in enumerate(res)]))
+            # print("[MQTT] sending \"%s\" on \"%s\"" % (mqtt_topic, mqtt_message))
+            mqtt_client.publish(mqtt_topic, mqtt_message)
+            mqtt_time_last_send = now
+            mqtt_debounce.clear()
+        else:
+            mqtt_debounce.append(clipwise_outputs)
         
         clip_thresholded = clipwise_outputs >= clip_threshold
         clip_indices = np.argwhere(clip_thresholded).reshape(-1)
@@ -917,8 +946,8 @@ def analyzeStream(model,threshold,clip_threshold):
            
             #else:
             pred = {'ClassName':AAL_CODE_dict[ci],'ClassName_German':AAL_CODE_dict_german[ci],'Datetime':st,'Datetime_2':st2,'Confidence':float(np.max(clipwise_outputs))}
-            print(pred)
-            mycol.insert(pred)
+            # print(pred)
+            # mycol.insert(pred)
 
 
             label=AAL_CODE_dict_german[ci]
@@ -1052,7 +1081,7 @@ def resultPooling(data):
     scount_sorted = sorted(scount_temp.items(), key=operator.itemgetter(1), reverse=True)
 
     # Save counter data
-    saveCounter()
+    # saveCounter()
 
     # Re-rank based on avg score
     s_sorted =  sorted(scores.items(), key=operator.itemgetter(1), reverse=True)[:cfg.MAX_RESULTS]
@@ -1126,8 +1155,8 @@ def run():
             data = resultPooling(p)
 
             # Write analysis to file
-            with open('clo_analysis.json', 'w') as afile:
-                json.dump(data, afile)
+            # with open('clo_analysis.json', 'w') as afile:
+            #     json.dump(data, afile)
 
             # DEBUG: Show prediction
             showResults(data)
