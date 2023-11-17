@@ -119,15 +119,30 @@ const db = {
 };
 
 app.get('/api/devices', (req, res) => {
-  res.send(JSON.stringify(Object.keys(db.devices).map(name => ({
-    name: name,
-    comment: db.devices[name].comment,
-  }))));
+  fs.readdir('./db/devices/', (err, files) => {
+    if (err) {
+      console.error(err);
+      res.status(500);
+      return;
+    }
+    const devices = [];
+    files.forEach(file => {
+      devices.push(JSON.parse(fs.readFileSync(`./db/devices/${file}`, { encoding: 'utf8', flag: 'r' })));
+    });
+    res.send(JSON.stringify(devices));
+  });
 });
 
 app.get('/api/devices/:deviceId', (req, res) => {
-  if (req.params.deviceId in db.devices) {
-    res.send(JSON.stringify(db.devices[req.params.deviceId]))
+  if (fs.existsSync(`./db/devices/${req.params.deviceId}.json`)) {
+    fs.readFile(`./db/devices/${req.params.deviceId}.json`, 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        res.status(500);
+        return;
+      }
+      res.send(data);
+    });
   } else {
     res.status(404);
     res.send('404');
@@ -135,12 +150,22 @@ app.get('/api/devices/:deviceId', (req, res) => {
 });
 
 app.post('/api/devices/:deviceId', (req, res) => {
-  if (req.params.deviceId in db.devices) {
-    db.devices[req.params.deviceId] = {
+  if (fs.existsSync(`./db/devices/${req.params.deviceId}.json`)) {
+    fs.writeFile(`./db/devices/${req.params.deviceId}.json`, JSON.stringify({
       name: req.body.name,
       comment: req.body.comment,
-    }
-    res.send('200');
+    }),
+      {
+        encoding: "utf8",
+        flag: "w",
+      }, (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500);
+          return;
+        }
+        res.send('200');
+      });
   } else {
     res.status(404);
     res.send('404');
@@ -159,15 +184,25 @@ fetch('/api/devices/fake_datasource_1', {
  */
 
 app.put('/api/devices/:deviceId', (req, res) => {
-  if (req.params.deviceId in db.devices) {
+  if (fs.existsSync(`./db/devices/${req.params.deviceId}.json`)) {
     res.status(409);
     res.send('409');
   } else {
-    db.devices[req.params.deviceId] = {
-      name: req.params.deviceId,
+    fs.writeFile(`./db/devices/${req.params.deviceId}.json`, JSON.stringify({
+      name: req.body.name,
       comment: req.body.comment,
-    };
-    res.send('200');
+    }),
+      {
+        encoding: "utf8",
+        flag: "w",
+      }, (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500);
+          return;
+        }
+        res.send('200');
+      });
   }
 });
 
@@ -183,8 +218,8 @@ fetch('/api/devices/test_add', {
 */
 
 app.delete('/api/devices/:deviceId', (req, res) => {
-  if (req.params.deviceId in db.devices) {
-    delete db.devices[req.params.deviceId];
+  if (fs.existsSync(`./db/devices/${req.params.deviceId}.json`)) {
+    fs.rmSync(`./db/devices/${req.params.deviceId}.json`)
     res.send('200');
   } else {
     res.status(404);
