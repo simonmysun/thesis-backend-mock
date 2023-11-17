@@ -1,0 +1,17 @@
+{
+  "name": "alert_demo_2",
+  "comment": "This is a commment",
+  "lastFired": "",
+  "rule": {
+    "alertName": "",
+    "expression": "",
+    "for": "",
+    "labels": {
+      "severity": ""
+    },
+    "annotations": {
+      "summary": "",
+      "description": ""
+    }
+  }
+}
