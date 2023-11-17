@@ -1,11 +1,12 @@
 const express = require('express');
+const fs = require('fs');
 const app = express();
 const winston = require('winston');
 const expressWinston = require('express-winston');
 const port = 3001;
 
 const formatter = winston.format.printf(({ timestamp, level, message, meta }) => {
-  return `${timestamp} ${level} ${message} ${meta? JSON.stringify(meta) : ''}`;
+  return `${timestamp} ${level} ${message} ${meta ? JSON.stringify(meta) : ''}`;
 });
 
 const logger = winston.createLogger({
@@ -18,7 +19,7 @@ const logger = winston.createLogger({
     winston.format.splat(),
     winston.format.colorize(),
     winston.format.printf(({ timestamp, level, message, meta }) => {
-      return `${timestamp} ${level} ${message} ${meta? JSON.stringify(meta) : ''}`;
+      return `${timestamp} ${level} ${message} ${meta ? JSON.stringify(meta) : ''}`;
     }),
   ),
   transports: [
@@ -37,9 +38,9 @@ app.use(expressWinston.logger({
     }),
     winston.format.colorize(),
     winston.format.printf(({ timestamp, level, message, meta }) => {
-      return `${timestamp} ${level} ${message} ${meta? JSON.stringify(meta) : ''}`;
+      return `${timestamp} ${level} ${message} ${meta ? JSON.stringify(meta) : ''}`;
     }),
-  ), 
+  ),
   meta: false,
   expressFormat: true,
   colorize: true,
@@ -125,7 +126,7 @@ app.get('/api/devices', (req, res) => {
 });
 
 app.get('/api/devices/:deviceId', (req, res) => {
-  if(req.params.deviceId in db.devices) {
+  if (req.params.deviceId in db.devices) {
     res.send(JSON.stringify(db.devices[req.params.deviceId]))
   } else {
     res.status(404);
@@ -134,7 +135,7 @@ app.get('/api/devices/:deviceId', (req, res) => {
 });
 
 app.post('/api/devices/:deviceId', (req, res) => {
-  if(req.params.deviceId in db.devices) {
+  if (req.params.deviceId in db.devices) {
     db.devices[req.params.deviceId] = {
       name: req.body.name,
       comment: req.body.comment,
@@ -158,7 +159,7 @@ fetch('/api/devices/fake_datasource_1', {
  */
 
 app.put('/api/devices/:deviceId', (req, res) => {
-  if(req.params.deviceId in db.devices) {
+  if (req.params.deviceId in db.devices) {
     res.status(409);
     res.send('409');
   } else {
@@ -182,7 +183,7 @@ fetch('/api/devices/test_add', {
 */
 
 app.delete('/api/devices/:deviceId', (req, res) => {
-  if(req.params.deviceId in db.devices) {
+  if (req.params.deviceId in db.devices) {
     delete db.devices[req.params.deviceId];
     res.send('200');
   } else {
@@ -214,7 +215,7 @@ app.get('/api/alerts', (req, res) => {
 });
 
 app.get('/api/alerts/:alertId', (req, res) => {
-  if(req.params.alertId in db.alerts) {
+  if (req.params.alertId in db.alerts) {
     res.send(JSON.stringify(db.alerts[req.params.alertId]))
   } else {
     res.status(404);
@@ -223,7 +224,7 @@ app.get('/api/alerts/:alertId', (req, res) => {
 });
 
 app.post('/api/alerts/:alertId', (req, res) => {
-  if(req.params.alertId in db.alerts) {
+  if (req.params.alertId in db.alerts) {
     db.alerts[req.params.alertId] = {
       name: req.params.alertId,
       comment: req.body.comment,
@@ -249,7 +250,7 @@ app.post('/api/alerts/:alertId', (req, res) => {
 });
 
 app.put('/api/alerts/:alertId', (req, res) => {
-  if(req.params.alertId in db.alerts) {
+  if (req.params.alertId in db.alerts) {
     res.status(409);
     res.send('409');
   } else {
@@ -275,7 +276,7 @@ app.put('/api/alerts/:alertId', (req, res) => {
 });
 
 app.delete('/api/alerts/:alertId', (req, res) => {
-  if(req.params.alertId in db.alerts) {
+  if (req.params.alertId in db.alerts) {
     delete db.alerts[req.params.alertId];
     res.send('200');
   } else {
