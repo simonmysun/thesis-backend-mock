@@ -335,9 +335,9 @@ app.get('/api/reload', (req, res) => {
           res.send('500');
           return;
         }
-        fetch('http://thesis-backend_prometheus/-/reload', {
+        fetch('http://thesis-backend_prometheus:9090/-/reload', {
           method: 'POST',
-        }).then(res => {
+        }).then(_ => {
           res.send('200');
         }).catch(err => {
           console.error(err);
