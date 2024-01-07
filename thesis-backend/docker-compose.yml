@@ -45,6 +45,9 @@ services:
       - traefik.enable=true
       - traefik.http.routers.thesis-backend-mock.rule=Host(`thesis-frontend.makelove.expert`)
       - traefik.http.services.thesis-backend-mock.loadbalancer.server.port=3001
+      - traefik.http.routers.thesis-backend-mock.tls.domains[0].main=makelove.expert
+      - traefik.http.routers.thesis-backend-mock.tls.domains[0].sans=*.makelove.expert
+      - traefik.http.routers.thesis-backend-mock.tls.certresolver=cloudflare-resolver
       - traefik.docker.network=thesis-backend
     networks:
       - thesis-backend
@@ -90,6 +93,9 @@ services:
       - traefik.enable=true
       - traefik.http.routers.thesis-backend-grafana.rule=Host(`thesis-backend-grafana-mys-karlsruhe-0.makelove.expert`)
       - traefik.http.services.thesis-backend-grafana.loadbalancer.server.port=3000
+      - traefik.http.routers.thesis-backend-grafana.tls.domains[0].main=makelove.expert
+      - traefik.http.routers.thesis-backend-grafana.tls.domains[0].sans=*.makelove.expert
+      - traefik.http.routers.thesis-backend-grafana.tls.certresolver=cloudflare-resolver
       - traefik.docker.network=thesis-backend
   thesis-backend-mqtt-exporter:
     container_name: "thesis-backend_thesis-backend-mqtt-exporter"
