@@ -53,7 +53,7 @@ mqtt_client = mqtt.Client(mqtt_client_id)
 mqtt_client.on_connect = mqtt_on_connect
 mqtt_client.on_message = mqtt_on_message
 mqtt_client.username_pw_set(username="TuCDataSource", password="b52393dda08af7a991e7af074f377997a082f652")
-mqtt_client.connect("mqtt.makelove.expert", port=1883, keepalive=60)
+mqtt_client.connect("mqtt.example.com", port=1883, keepalive=60)
 mqtt_client.loop_start()
 mqtt_time_last_send = time.time()
 mqtt_msg_freq = 1 / 20

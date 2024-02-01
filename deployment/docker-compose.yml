@@ -1,5 +1,32 @@
 version: '3.8'
 services:
+  nginx:
+    image: nginx:1.22.1@sha256:4c5e1e4ab724db750979851cd2f4e2dec13648792280be1cd052bf9c638285da
+    restart: unless-stopped
+    expose:
+      - 80
+    volumes:
+      - ./nginx/config/:/etc/nginx/:ro
+      - ./nginx/logs/:/logs/
+      - ./static:/usr/share/nginx/:ro
+    networks:
+      - nginx
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nginx.rule=Host(`thesis-frontend-static.example.com`)
+      - traefik.http.routers.nginx.priority=1
+  mosquitto:
+    image: eclipse-mosquitto:2.0.15@sha256:29c92f9144d4e65f7e647694d4b6aa7f0ac6a995bd102251ea05f7edf258ad20
+    restart: unless-stopped
+    volumes:
+      - ./mosquitto/config/:/mosquitto/config/:ro # TuC:12d6d9d3a7bb516ebd27979e45358faa526b6bdd,TuCDataSource:b52393dda08af7a991e7af074f377997a082f652
+      - /mosquitto/data:/mosquitto/data/
+    expose:
+      - 9001
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mosquitto.rule=(Host(`thesis-frontend.example.com`)) && Path(`/mqtt`)
+      - traefik.http.services.mosquitto.loadbalancer.server.port=9001
   prometheus:
     container_name: "thesis-backend_prometheus"
     image: prom/prometheus:v2.41.0@sha256:1a3e9a878e50cd339ae7cf5718fda08381dda2d4ccd28e94bbaa3190d1a566c2
@@ -43,11 +70,8 @@ services:
       - 3001
     labels:
       - traefik.enable=true
-      - traefik.http.routers.thesis-backend-mock.rule=Host(`thesis-frontend.makelove.expert`)
+      - traefik.http.routers.thesis-backend-mock.rule=Host(`thesis-frontend.example.com`)
       - traefik.http.services.thesis-backend-mock.loadbalancer.server.port=3001
-      - traefik.http.routers.thesis-backend-mock.tls.domains[0].main=makelove.expert
-      - traefik.http.routers.thesis-backend-mock.tls.domains[0].sans=*.makelove.expert
-      - traefik.http.routers.thesis-backend-mock.tls.certresolver=cloudflare-resolver
       - traefik.docker.network=thesis-backend
     networks:
       - thesis-backend
@@ -91,11 +115,8 @@ services:
       - thesis-backend
     labels:
       - traefik.enable=true
-      - traefik.http.routers.thesis-backend-grafana.rule=Host(`thesis-backend-grafana-mys-karlsruhe-0.makelove.expert`)
+      - traefik.http.routers.thesis-backend-grafana.rule=Host(`thesis-backend-grafana.example.com`)
       - traefik.http.services.thesis-backend-grafana.loadbalancer.server.port=3000
-      - traefik.http.routers.thesis-backend-grafana.tls.domains[0].main=makelove.expert
-      - traefik.http.routers.thesis-backend-grafana.tls.domains[0].sans=*.makelove.expert
-      - traefik.http.routers.thesis-backend-grafana.tls.certresolver=cloudflare-resolver
       - traefik.docker.network=thesis-backend
   thesis-backend-mqtt-exporter:
     container_name: "thesis-backend_thesis-backend-mqtt-exporter"

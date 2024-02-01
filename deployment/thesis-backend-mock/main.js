@@ -354,7 +354,7 @@ app.get('/api/reload', (req, res) => {
 // });
 
 import proxy from 'express-http-proxy';
-app.use('/', proxy('https://thesis-frontend-static.makelove.expert'));
+app.use('/', proxy('https://thesis-frontend-static.example.com'));
 
 
 app.listen(port, () => {
