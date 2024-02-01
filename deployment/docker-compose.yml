@@ -19,7 +19,7 @@ services:
     image: eclipse-mosquitto:2.0.15@sha256:29c92f9144d4e65f7e647694d4b6aa7f0ac6a995bd102251ea05f7edf258ad20
     restart: unless-stopped
     volumes:
-      - ./mosquitto/config/:/mosquitto/config/:ro # TuC:12d6d9d3a7bb516ebd27979e45358faa526b6bdd,TuCDataSource:b52393dda08af7a991e7af074f377997a082f652
+      - ./mosquitto/config/:/mosquitto/config/:ro
       - /mosquitto/data:/mosquitto/data/
     expose:
       - 9001

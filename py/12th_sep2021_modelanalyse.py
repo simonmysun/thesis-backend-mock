@@ -52,7 +52,7 @@ mqtt_topic = "tele/indoor_sound_classification/fake_datasource_2/state"
 mqtt_client = mqtt.Client(mqtt_client_id)
 mqtt_client.on_connect = mqtt_on_connect
 mqtt_client.on_message = mqtt_on_message
-mqtt_client.username_pw_set(username="TuCDataSource", password="b52393dda08af7a991e7af074f377997a082f652")
+mqtt_client.username_pw_set(username="pythonclient1", password="b7a134528b9e08795a9a7e9871a0d70447329287")
 mqtt_client.connect("mqtt.example.com", port=1883, keepalive=60)
 mqtt_client.loop_start()
 mqtt_time_last_send = time.time()
